@@ -9,50 +9,11 @@ export default function Usuarios() {
   const [image, setImage] = useState({ preview: "", raw: "" });
   const { handleSubmit, register, errors } = useForm();
   const onSubmit = async (values) => {
-    // const response = await api.post(
-    //   "/users",
-    //   values.nome,
-    //   values.login,
-    //   values.email,
-    //   values.senha,
-    //   values.estado,
-    //   values.cidade,
-    //   values.rua,
-    //   values.numero,
-    //   values.bairro,
-    //   values.telefone,
-    //   values.referencia,
-    //   values.tipo,
-    //   values.materia_id,
-    //   values.serie_id,
-    //   values.matricula,
-    //   values.responsavel_aluno_um,
-    //   values.responsavel_aluno_dois,
-    //   { file: image },
-    //   {
-    //     headers: { auth: getToken() },
-    //   }
-    // );
-    console.log(
-      values.nome,
-      values.login,
-      values.email,
-      values.senha,
-      values.estado,
-      values.cidade,
-      values.rua,
-      values.numero,
-      values.bairro,
-      values.telefone,
-      values.referencia,
-      values.tipo,
-      values.materia_id,
-      values.serie_id,
-      values.matricula,
-      values.responsavel_aluno_um,
-      values.responsavel_aluno_dois,
-    );
+    // const response = await api.post("/users", values, {
+    //   headers: { auth: getToken() },
+    // });
   };
+
   useEffect(() => {
     async function conectMateria() {
       const response = await api.get("/materias");
@@ -74,6 +35,7 @@ export default function Usuarios() {
   }, []);
 
   const handleChange = (e) => {
+    console.log(e.target.files)
     if (e.target.files.length) {
       setImage({
         preview: URL.createObjectURL(e.target.files[0]),
@@ -81,7 +43,6 @@ export default function Usuarios() {
       });
     }
   };
-
   return (
     <div className="col-md-12 grid-margin stretch-card">
       <div className="card">
@@ -91,18 +52,16 @@ export default function Usuarios() {
             {" "}
             Tipos de Usuários (Adm, Estudante e Professor){" "}
           </p>
-          <form className="forms-sample" onSubmit={handleSubmit(onSubmit)}>
+          <form
+            className="forms-sample"
+            onSubmit={handleSubmit(onSubmit)}
+            encType="multipart/form-data"
+          >
             <div className="col-6" id="positionForm">
               <div className="col-6">
                 <label htmlFor="upload-button">
                   {image.preview ? (
-                    <img
-                      src={image.preview}
-                      alt="dummy"
-                      id="previewImage"
-                      name="file"
-                      ref={register()}
-                    />
+                    <img src={image.preview} alt="dummy" id="previewImage" />
                   ) : (
                     <>
                       <div className="text-center" id="output_image"></div>
@@ -112,14 +71,7 @@ export default function Usuarios() {
               </div>
               <div className="form-group">
                 <div>
-                  <input
-                    type="file"
-                    id="upload-button"
-                    style={{ display: "none" }}
-                    onChange={handleChange}
-                    name="file"
-                    ref={register()}
-                  />
+                  <input type="file" name="file" onChange={handleChange} />
                   <br />
                 </div>
               </div>
@@ -284,6 +236,7 @@ export default function Usuarios() {
                     class="form-control form-control-lg"
                     id="exampleFormControlSelect1"
                     name="serie_id"
+                    ref={register()}
                   >
                     <option></option>
                     {serie.map((item) => (
@@ -320,6 +273,7 @@ export default function Usuarios() {
                     className="form-control"
                     id="exampleInputCity1"
                     placeholder="Nome do pai"
+                    name="responsavel_aluno_dois"
                     ref={register()}
                   />
                 </div>

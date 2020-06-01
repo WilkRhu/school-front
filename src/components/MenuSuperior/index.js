@@ -1,7 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import jwt, { decode } from "jsonwebtoken";
 import { logout } from "../../service/auth";
 
-export default function Menu() {
+export default function Menu(props) {
+  const [file, setFile] = useState("");
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  useEffect(() => {
+    function decodeToken() {
+      jwt.verify(props.user, "shhhhh", (err, decoded) => {
+        setNome(decoded.nome);
+        setEmail(decoded.email);
+        setFile(decoded.file);
+      });
+    }
+    decodeToken();
+  }, []);
   return (
     <nav className="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div className="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center">
@@ -179,7 +193,7 @@ export default function Menu() {
             >
               <img
                 className="img-xs rounded-circle"
-                src="../../../assets/images/faces/face8.jpg"
+                src={`http://localhost:3001/tmp/uploads/${file}`}
                 alt="Profile image"
               />{" "}
             </a>
@@ -190,12 +204,12 @@ export default function Menu() {
               <div className="dropdown-header text-center">
                 <img
                   className="img-md rounded-circle"
-                  src="../../../assets/images/faces/face8.jpg"
+                  src={`http://localhost:3001/tmp/uploads/${file}`}
                   alt="Profile image"
                 />
-                <p className="mb-1 mt-3 font-weight-semibold">Allen Moreno</p>
+                <p className="mb-1 mt-3 font-weight-semibold">{nome}</p>
                 <p className="font-weight-light text-muted mb-0">
-                  allenmoreno@gmail.com
+                  {email}
                 </p>
               </div>
               <a className="dropdown-item">

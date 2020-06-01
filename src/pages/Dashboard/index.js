@@ -1,13 +1,13 @@
-import React  from "react";
+import React from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import { isAuthenticated } from "../../service/auth";
+import { isAuthenticated, getToken } from "../../service/auth";
 
 //Components
 import Materias from "../Materias";
-import Series from '../Series';
-import Usuarios from '../Usuarios';
-import MenuSuperior from '../../components/MenuSuperior';
-import Sidebar from '../../components/SideBar';
+import Series from "../Series";
+import Usuarios from "../Usuarios";
+import MenuSuperior from "../../components/MenuSuperior";
+import Sidebar from "../../components/SideBar";
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
@@ -16,7 +16,9 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
       isAuthenticated() ? (
         <Component {...props} />
       ) : (
-        <Redirect to={{ pathname: "/dashboard", state: { from: props.location } }} />
+        <Redirect
+          to={{ pathname: "/dashboard", state: { from: props.location } }}
+        />
       )
     }
   />
@@ -25,18 +27,24 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 function Dashboard() {
   return (
     <div classNameName="container-scroller">
-      <MenuSuperior />
+      <MenuSuperior user={getToken()} />
       {/*-------------------------------------------------------------------*/}
       <div class="container-fluid page-body-wrapper">
-        <Sidebar />
+        <Sidebar user={getToken()} />
         <div class="main-panel">
           <div class="content-wrapper">
             <div class="row">
               <BrowserRouter>
                 <Switch>
-                  <PrivateRoute path="/dashboard/materias" component={Materias} />
+                  <PrivateRoute
+                    path="/dashboard/materias"
+                    component={Materias}
+                  />
                   <PrivateRoute path="/dashboard/series" component={Series} />
-                  <PrivateRoute path="/dashboard/usuarios" component={Usuarios} />
+                  <PrivateRoute
+                    path="/dashboard/usuarios"
+                    component={Usuarios}
+                  />
                 </Switch>
               </BrowserRouter>
             </div>

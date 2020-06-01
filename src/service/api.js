@@ -2,7 +2,8 @@ import axios from "axios";
 import { getToken } from "./auth";
 
 const api = axios.create({
-  baseURL: "https://escola-sonho-de-icaro.herokuapp.com/",
+  //baseURL: "https://escola-sonho-de-icaro.herokuapp.com/",
+  baseURL: "http://localhost:3001/",
   headers: {                  
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "auth", 

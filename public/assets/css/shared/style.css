@@ -13866,6 +13866,7 @@ ul li {
   z-index: 9990;
   background: #000;
   color: #ffffff;
+  display: none;
 }
 .item-purchase-banner .banner-text {
   margin-bottom: 0;
