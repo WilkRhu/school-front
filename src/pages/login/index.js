@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {ProgressBar} from 'react-bootstrap';
 import { useForm } from "react-hook-form";
 import { withRouter } from "react-router-dom";
+import {  dataAno } from "../../service/formatData";
 import api from "../../service/api";
 import { login } from "../../service/auth";
+import "./style.css";
 
 function Login(props) {
+  const [timer, setTimer] = useState(false);
   const { handleSubmit, register, errors } = useForm();
   const [error, setError] = useState();
   const onSubmit = async (values) => {
@@ -14,9 +18,13 @@ function Login(props) {
       alert(error);
     } else {
       try {
-        const response = await api.post("/logOn", { email, senha });
-        login(response.data.token);
-        props.history.push("/dashboard");
+        await api.post("/logOn", { email, senha }).then((response) => {
+          setTimer(true);
+          setTimeout(() => {
+            login(response.data.token);
+            props.history.push("/dashboard");
+          }, 2000);
+          });
       } catch (err) {
         setError(
           "Houve um problema com o login, verifique suas credenciais. T.T"
@@ -25,6 +33,7 @@ function Login(props) {
       }
     }
   };
+  console.log(timer)
   return (
     <div className="container-scroller">
       <div className="container-fluid page-body-wrapper full-page-wrapper">
@@ -76,6 +85,13 @@ function Login(props) {
                       </div>
                     </div>
                   </div>
+                  {timer === true ? 
+                  <div className="form-group col-12">
+                    <div className="col-2" id="central">
+                        <i className="fa fa-spinner fa-spin fa-3x fa-fw" aria-hidden="true"></i>
+                    </div>
+                  </div>
+                  : ''}
                   <div className="form-group">
                     <button className="btn btn-primary submit-btn btn-block">
                       Login
@@ -122,7 +138,7 @@ function Login(props) {
                 </li>
               </ul> */}
               <p className="footer-text text-center">
-                copyright © 2018 Bootstrapdash. All rights reserved.
+                Copyright © {dataAno(new Date())}. Todos os direitos reservados a Escola, Development By Wilk Caetano.
               </p>
             </div>
           </div>

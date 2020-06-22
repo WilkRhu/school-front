@@ -3,9 +3,11 @@ import api from "../../service/api";
 import { dataAtualFormatada } from "../../service/formatData";
 import { useForm } from "react-hook-form";
 import './style.css'
+import {Danger, Success} from '../../components/Alert/alerts';
 
 export default function Materias() {
   const [materia, setMateria] = useState([]);
+  const [cadMateria, setCadMateria] = useState(false);
   const { handleSubmit, register, errors } = useForm();
   const [loading, setLoaging] = useState(false);
   useEffect(() => {
@@ -23,8 +25,10 @@ export default function Materias() {
   const onSubmit = async (values) => {
     const response = await api.post("/materias", values);
     if (response.status === 201) {
+      setCadMateria(true);
       setLoaging(true);
       setTimeout(() => {
+        setCadMateria(false);
         setLoaging(false);
        
       }, 4000);
@@ -33,6 +37,9 @@ export default function Materias() {
 
   return (
     <div className="col-12">
+      {cadMateria === true ?
+          Success("Matéria cadastrada com sucesso!")
+        : ''}
       <div class="col-12 stretch-card">
         <div class="card">
           <div class="card-body">
