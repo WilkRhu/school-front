@@ -1,27 +1,51 @@
 import React, { useState, useEffect } from "react";
 import api from "../../service/api";
-import { dataAtualFormatada } from '../../service/formatData';
+import { dataAtualFormatada } from "../../service/formatData";
+import { useForm } from "react-hook-form";
+import './style.css'
+import {Danger, Success} from '../../components/Alert/alerts';
 
 export default function Materias() {
   const [materia, setMateria] = useState([]);
+  const [cadMateria, setCadMateria] = useState(false);
+  const { handleSubmit, register, errors } = useForm();
+  const [loading, setLoaging] = useState(false);
   useEffect(() => {
     async function conectMateria() {
       const response = await api.get("/materias");
-      if (response.status === 200) {
-        setMateria(response.data);
-      }
+      setLoaging(true);
+      setTimeout(() => {
+        setLoaging(false);
+      }, 4000);
+      setMateria(response.data);
     }
     conectMateria();
   }, []);
 
+  const onSubmit = async (values) => {
+    const response = await api.post("/materias", values);
+    if (response.status === 201) {
+      setCadMateria(true);
+      setLoaging(true);
+      setTimeout(() => {
+        setCadMateria(false);
+        setLoaging(false);
+       
+      }, 4000);
+    }
+  };
+
   return (
     <div className="col-12">
+      {cadMateria === true ?
+          Success("Matéria cadastrada com sucesso!")
+        : ''}
       <div class="col-12 stretch-card">
         <div class="card">
           <div class="card-body">
             <h4 class="card-title">Cadasto de Matérias</h4>
             <p class="card-description"> </p>
-            <form class="forms-sample">
+            <form class="forms-sample" onSubmit={handleSubmit(onSubmit)}>
               <div class="form-group row">
                 <label for="exampleInputEmail2" class="col-sm-3 col-form-label">
                   Nome
@@ -32,6 +56,8 @@ export default function Materias() {
                     class="form-control"
                     id="exampleInputEmail2"
                     placeholder="Ex: Matemática"
+                    name="nome"
+                    ref={register()}
                     required
                   />
                 </div>
@@ -45,26 +71,38 @@ export default function Materias() {
         </div>
       </div>
       <br />
-      <div class="col-lg-12 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Matérias Cadastradas</h4>
-            <table class="table">
+      <div className="col-lg-12 grid-margin stretch-card">
+        <div className="card">
+          <div className="card-body">
+            <h4 className="card-title">Matérias Cadastradas</h4>
+            <table className="table">
               <thead>
                 <tr>
                   <th>Nome da Matéria</th>
                   <th>Data de Criação</th>
                   <th>Data de Modificação</th>
+                  <th>Editar</th>
+                  <th>Excluir</th>
                 </tr>
               </thead>
-              <tbody>
-                {materia.map((item) => (
-                  <tr>
-                    <td key={item.id}>{item.nome}</td>
-                    <td>{dataAtualFormatada(item.created_at)}</td>
-                    <td>{dataAtualFormatada(item.updated_at)}</td>
-                  </tr>
-                ))}
+              <tbody className="tbody">
+                {!loading ? (
+                  materia.map((item) => (
+                    <tr>
+                      <td key={item.id}>{item.nome}</td>
+                      <td>{dataAtualFormatada(item.created_at)}</td>
+                      <td>{dataAtualFormatada(item.updated_at)}</td>
+                      <td>
+                        <i className="fa fa-edit"></i>
+                      </td>
+                      <td>
+                        <i className="fa fa-trash-o"></i>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <img src="../../assets/images/loader.gif" className="col-12" id="img" />
+                )}
               </tbody>
             </table>
           </div>
