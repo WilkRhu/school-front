@@ -1,7 +1,25 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { logout } from "../../service/auth";
+import jwt from 'jsonwebtoken';
 
 export default function Menu() {
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [file, setFile] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem('@user-token');
+    function Descript (token) {
+      var decoded = jwt.verify(token, 'shhhhh');
+     setNome(decoded.nome);
+     setEmail(decoded.email);
+     setFile(decoded.file);
+    };
+    Descript(token);
+  },[]);
+  
+
+
   return (
     <nav className="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div className="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center">
@@ -193,9 +211,9 @@ export default function Menu() {
                   src="../../../assets/images/faces/face8.jpg"
                   alt="Profile image"
                 />
-                <p className="mb-1 mt-3 font-weight-semibold">Allen Moreno</p>
+                <p className="mb-1 mt-3 font-weight-semibold">{nome}</p>
                 <p className="font-weight-light text-muted mb-0">
-                  allenmoreno@gmail.com
+                    {email}
                 </p>
               </div>
               <a className="dropdown-item">
