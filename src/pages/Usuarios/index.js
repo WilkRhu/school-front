@@ -6,14 +6,39 @@ import { useForm } from "react-hook-form";
 export default function Usuarios() {
   const [materia, setMateria] = useState([]);
   const [serie, setSerie] = useState([]);
+  const [form, setForm] = useState();
+  const [file, setFile] = useState('');
+  const [filename, setFilename] = useState('Choose File');
   const [image, setImage] = useState({ preview: "", raw: "" });
-  const { handleSubmit, register, errors } = useForm();
-  const onSubmit = async (values) => {
-    // const response = await api.post("/users", values, {
-    //   headers: { auth: getToken() },
-    // });
-  };
 
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();   
+    formData.append('file', file);
+    formData.append('nome', form.nome);
+    formData.append('login', form.login);
+    formData.append('email', form.email);
+    formData.append('senha', form.senha);
+    formData.append('estado', form.estado);
+    formData.append('cidade', form.cidade);
+    formData.append('rua', form.rua);
+    formData.append('numero', form.numero);
+    formData.append('bairro', form.bairro);
+    formData.append('telefone', form.telefone);
+    formData.append('referencia', form.referencia);
+    formData.append('tipo', form.tipo);
+    formData.append('materia_id', form.materia_id);
+    formData.append('serie_id', form.serie_id);
+    formData.append('responsavel_aluno_um', form.responsavel_aluno_um);
+    formData.append('responsavel_aluno_dois', form.responsavel_aluno_dois)
+
+
+    const response = await api.post("/users", formData, {
+      headers: { auth: getToken() },
+    });
+    console.log(response);
+  };
+  console.log(form)
   useEffect(() => {
     async function conectMateria() {
       const response = await api.get("/materias");
@@ -35,14 +60,23 @@ export default function Usuarios() {
   }, []);
 
   const handleChange = (e) => {
-    console.log(e.target.files)
+    setForm({
+      ...form, [e.target.name] : e.target.value
+    });
+    
+  };
+
+  const handleChangeFile = (e) => {
+    setFile(e.target.files[0]);
+    setFilename(e.target.files[0].name);
     if (e.target.files.length) {
       setImage({
         preview: URL.createObjectURL(e.target.files[0]),
         raw: e.target.files[0],
       });
     }
-  };
+  }
+
   return (
     <div className="col-md-12 grid-margin stretch-card">
       <div className="card">
@@ -54,11 +88,11 @@ export default function Usuarios() {
           </p>
           <form
             className="forms-sample"
-            onSubmit={handleSubmit(onSubmit)}
+           onSubmit={onSubmit}
             encType="multipart/form-data"
+            id="form"
           >
-            <div className="col-6" id="positionForm">
-              <div className="col-6">
+            <div className="col-6">
                 <label htmlFor="upload-button">
                   {image.preview ? (
                     <img src={image.preview} alt="dummy" id="previewImage" />
@@ -69,9 +103,10 @@ export default function Usuarios() {
                   )}
                 </label>
               </div>
+            <div className="col-6" id="positionForm">
               <div className="form-group">
                 <div>
-                  <input type="file" name="file" onChange={handleChange} />
+                  <input type="file" name="file" onChange={e => handleChangeFile(e)}  />
                   <br />
                 </div>
               </div>
@@ -83,9 +118,8 @@ export default function Usuarios() {
                   id="exampleInputName1"
                   placeholder="Name"
                   name="nome"
-                  ref={register({
-                    required: "Required",
-                  })}
+                  onChange={e => handleChange(e)}
+                  required
                 />
               </div>
               <div className="form-group">
@@ -96,9 +130,8 @@ export default function Usuarios() {
                   id="exampleInputName1"
                   placeholder="Login"
                   name="login"
-                  ref={register({
-                    required: "Required",
-                  })}
+                  onChange={e => handleChange(e)}
+                  required
                 />
               </div>
               <div className="form-group">
@@ -108,16 +141,10 @@ export default function Usuarios() {
                   className="form-control"
                   id="exampleInputEmail3"
                   placeholder="Email"
-                  ref={register({
-                    required: "Required",
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                      message: "invalid email address",
-                    },
-                  })}
                   name="email"
+                  onChange={e => handleChange(e)}
+                  required
                 />
-                {errors.email && errors.email.message}
               </div>
               <div className="form-group">
                 <label for="exampleInputPassword4">Senha</label>
@@ -126,10 +153,9 @@ export default function Usuarios() {
                   className="form-control"
                   id="exampleInputPassword4"
                   placeholder="Password"
-                  ref={register({
-                    required: "Required",
-                  })}
                   name="senha"
+                  onChange={e => handleChange(e)}
+                  required
                 />
               </div>
             </div>
@@ -142,7 +168,7 @@ export default function Usuarios() {
                   id="exampleInputCity1"
                   placeholder="Estado"
                   name="estado"
-                  ref={register()}
+                  onChange={e => handleChange(e)}
                 />
               </div>
               <div className="form-group">
@@ -153,7 +179,7 @@ export default function Usuarios() {
                   id="exampleInputCity1"
                   placeholder="Cidade"
                   name="cidade"
-                  ref={register()}
+                  onChange={e => handleChange(e)}
                 />
               </div>
               <div className="form-group">
@@ -164,7 +190,7 @@ export default function Usuarios() {
                   id="exampleInputCity1"
                   placeholder="Rua"
                   name="rua"
-                  ref={register()}
+                  onChange={e => handleChange(e)}
                 />
               </div>
               <div className="form-group">
@@ -175,7 +201,7 @@ export default function Usuarios() {
                   id="exampleInputCity1"
                   placeholder="Ex: 00 "
                   name="numero"
-                  ref={register()}
+                  onChange={e => handleChange(e)}
                 />
               </div>
               <div className="form-group">
@@ -186,7 +212,7 @@ export default function Usuarios() {
                   id="exampleInputCity1"
                   placeholder="Bairro"
                   name="bairro"
-                  ref={register()}
+                  onChange={e => handleChange(e)}
                 />
               </div>
               <div className="form-group">
@@ -197,7 +223,7 @@ export default function Usuarios() {
                   id="exampleInputCity1"
                   placeholder="Telefone"
                   name="telefone"
-                  ref={register()}
+                  onChange={e => handleChange(e)}
                 />
               </div>
               <div className="form-group">
@@ -208,7 +234,7 @@ export default function Usuarios() {
                   id="exampleInputCity1"
                   placeholder="Referência"
                   name="referencia"
-                  ref={register()}
+                  onChange={e => handleChange(e)}
                 />
               </div>
               <div class="form-group">
@@ -217,9 +243,8 @@ export default function Usuarios() {
                   class="form-control form-control-lg"
                   id="tipo"
                   name="tipo"
-                  ref={register({
-                    required: "Required",
-                  })}
+                  onChange={e => handleChange(e)}
+                  required
                 >
                   <option></option>
                   <option value="admin">Admin</option>
@@ -236,7 +261,7 @@ export default function Usuarios() {
                     class="form-control form-control-lg"
                     id="exampleFormControlSelect1"
                     name="serie_id"
-                    ref={register()}
+                    onChange={e => handleChange(e)}
                   >
                     <option></option>
                     {serie.map((item) => (
@@ -252,7 +277,7 @@ export default function Usuarios() {
                     id="exampleInputCity1"
                     placeholder="Matrícula"
                     name="matricula"
-                    ref={register()}
+                    onChange={e => handleChange(e)}
                   />
                 </div>
                 <div className="from-group">
@@ -263,7 +288,7 @@ export default function Usuarios() {
                     id="exampleInputCity1"
                     placeholder="Nome da Mãe"
                     name="responsavel_aluno_um"
-                    ref={register()}
+                    onChange={e => handleChange(e)}
                   />
                 </div>
                 <div className="from-group">
@@ -274,7 +299,7 @@ export default function Usuarios() {
                     id="exampleInputCity1"
                     placeholder="Nome do pai"
                     name="responsavel_aluno_dois"
-                    ref={register()}
+                    onChange={e => handleChange(e)}
                   />
                 </div>
               </div>
@@ -287,7 +312,7 @@ export default function Usuarios() {
                     class="form-control form-control-lg"
                     id="tipo"
                     name="materia_id"
-                    ref={register()}
+                    onChange={e => handleChange(e)}
                   >
                     <option></option>
                     {materia.map((item) => (
