@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import api from "../../service/api";
 import { getToken } from "../../service/auth";
 import { useForm } from "react-hook-form";
+import {Danger, Success} from '../../components/Alert/alerts';
 
 export default function Usuarios() {
   const [materia, setMateria] = useState([]);
   const [serie, setSerie] = useState([]);
   const [form, setForm] = useState();
   const [file, setFile] = useState('');
+  const [cadUser, setCadUser] = useState(false);
+  const [errorcaduser, setErroCadUser] = useState(false);
   const [filename, setFilename] = useState('Choose File');
   const [image, setImage] = useState({ preview: "", raw: "" });
 
@@ -36,9 +39,20 @@ export default function Usuarios() {
     const response = await api.post("/users", formData, {
       headers: { auth: getToken() },
     });
-    console.log(response);
+    
+    if (response.status === 201) {
+      setCadUser(true);
+      setTimeout(() => {
+        setCadUser(false);
+      }, 4000);
+    } else {
+      setErroCadUser(true);
+      setTimeout(() => {
+        setErroCadUser(false);
+      }, 4000);
+    }
   };
-  console.log(form)
+
   useEffect(() => {
     async function conectMateria() {
       const response = await api.get("/materias");
@@ -80,6 +94,12 @@ export default function Usuarios() {
   return (
     <div className="col-md-12 grid-margin stretch-card">
       <div className="card">
+       {cadUser === true ?
+          Success("Usuário cadastrado com sucesso!")
+        : ""}
+        {errorcaduser === true ?
+          Danger("Ocorreu um erro no cadastro do usuário!")
+        : ""}
         <div className="card-body">
           <h4 className="card-title">Formulario Cadastro de Usuário</h4>
           <p className="card-description">
