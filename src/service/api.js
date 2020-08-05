@@ -2,8 +2,8 @@ import axios from "axios";
 import { getToken } from "./auth";
 
 const api = axios.create({
-  //baseURL: "https://escola-sonho-de-icaro.herokuapp.com/",
-  baseURL: "http://localhost:3001/",
+  //baseURL: "http://localhost:3001/",
+  baseURL: "https://escolasonhosdeicaro.herokuapp.com/",
   headers: {                  
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "auth", 
@@ -15,7 +15,7 @@ const api = axios.create({
 api.interceptors.request.use(async config => {
   const token = getToken();
   if (token) {
-    config.headers.auth = `${token}`;
+    config.headers.Berear = `${token}`;
   }
   return config;
 });

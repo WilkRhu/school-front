@@ -403,8 +403,8 @@
 /* Sidebar */
 .sidebar {
   min-height: calc(100vh - 63px);
-  background: -webkit-gradient(linear, left bottom, left top, from(#5768f3), to(#1c45ef));
-  background: linear-gradient(to top, #5768f3, #1c45ef);
+  background: -webkit-gradient(linear, left bottom, left top, from(#120A8F), to(#1c45ef));
+  background: linear-gradient(to top, #120A8F, #1c45ef);
   font-family: "roboto", sans-serif;
   padding: 0;
   width: 270px;
@@ -449,7 +449,7 @@
           display: block;
           height: 100%;
           width: 2px;
-          background: #1026de; }
+          background: #120A8F; }
         .sidebar > .nav .nav-item:not(.hover-open) .collapse .sub-menu .nav-item .nav-link:hover,
         .sidebar > .nav .nav-item:not(.hover-open) .collapsing .sub-menu .nav-item .nav-link:hover {
           color: #fff; }

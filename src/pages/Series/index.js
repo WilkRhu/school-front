@@ -2,13 +2,19 @@ import React, { useState, useEffect } from "react";
 import api from "../../service/api";
 import { getToken } from "../../service/auth";
 import { dataAtualFormatada } from "../../service/formatData";
+import { useForm } from "react-hook-form";
 
 export default function Series() {
   const [materia, setMateria] = useState([]);
   const [serie, setSerie] = useState([]);
+  const { handleSubmit, register, errors } = useForm();
+  const [cadMateria, setCadMateria] = useState(false);
+  const[errorCadMateria, setErroCadMateria] = useState(false);
+  const [loading, setLoaging] = useState(false);
+
   useEffect(() => {
     async function conectMateria() {
-      const response = await api.get("/materias");
+      const response = await api.get("/subject");
       if (response.status === 200) {
         setMateria(response.data);
       }
@@ -26,6 +32,24 @@ export default function Series() {
     conectSerie();
   }, []);
 
+  const onSubmit = async (values) => {
+    const response = await api.post("/series", values);
+    if (response.status === 201) {
+      setCadMateria(true);
+      setLoaging(true);
+      setTimeout(() => {
+        setCadMateria(false);
+        setLoaging(false);
+       
+      }, 4000);
+    }
+    setErroCadMateria(true)
+    setTimeout(() => {
+      setErroCadMateria(false)
+    }, 4000);
+  };
+
+
   return (
     <div className="col-12">
       <div className="col-12 stretch-card">
@@ -33,7 +57,7 @@ export default function Series() {
           <div className="card-body">
             <h4 className="card-title">Cadasto de Séries</h4>
             <p className="card-description"> </p>
-            <form className="forms-sample">
+            <form className="forms-sample" onSubmit={handleSubmit(onSubmit)}>
               <div className="form-group row">
                 <label
                   for="exampleInputEmail2"
@@ -47,6 +71,8 @@ export default function Series() {
                     className="form-control"
                     id="exampleInputEmail2"
                     placeholder="Ex: 1º Ano"
+                    name="name"
+                    ref={register()}
                     required
                   />
                 </div>
@@ -66,9 +92,11 @@ export default function Series() {
                             <input
                               type="checkbox"
                               className="form-check-input"
-                              value=""
+                              name="subject"
+                              value={item.id}
+                              ref={register()}
                             />
-                            {item.nome}
+                            {item.name}
                           </label>
                         </div>
                       ))
@@ -99,7 +127,7 @@ export default function Series() {
               <tbody>
                 {serie.map((item) => (
                   <tr>
-                    <td>{item.nome}</td>
+                    <td>{item.name}</td>
                     <td>{dataAtualFormatada(item.created_at)}</td>
                     <td>
                       <i className="fa fa-trash-o "></i>

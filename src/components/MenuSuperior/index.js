@@ -1,20 +1,28 @@
 import React, { useEffect, useState } from "react";
-import jwt, { decode } from "jsonwebtoken";
-import { logout } from "../../service/auth";
+import { logout, getToken } from "../../service/auth";
+import logUser from "../../service/logUser";
+import api from "../../service/api";
 
 export default function Menu(props) {
-  const [file, setFile] = useState("");
-  const [nome, setNome] = useState("");
+  const token = getToken();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [file, setFile] = useState("");
+  const [contentType, setContentType] = useState("");
+  const [type, setType] = useState("");
+ 
   useEffect(() => {
-    function decodeToken() {
-      jwt.verify(props.user, "shhhhh", (err, decoded) => {
-        setNome(decoded.nome);
-        setEmail(decoded.email);
-        setFile(decoded.file);
-      });
+    const { id, name, email, type } = logUser(token);
+    setType(type)
+    setEmail(email);
+    setName(name);
+    async function fileUser(){
+      const response = await api.get(`/users/${id}`);
+      setFile(Buffer.from(response.data.file.data.data.data).toString('base64'));
+      setContentType(response.data.file.type)
     }
-    decodeToken();
+    fileUser();
+  
   }, []);
   return (
     <nav className="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
@@ -193,7 +201,7 @@ export default function Menu(props) {
             >
               <img
                 className="img-xs rounded-circle"
-                src={`http://localhost:3001/tmp/uploads/${file}`}
+                src={`data:${contentType};base64,${file}`}
                 alt="Profile image"
               />{" "}
             </a>
@@ -204,12 +212,12 @@ export default function Menu(props) {
               <div className="dropdown-header text-center">
                 <img
                   className="img-md rounded-circle"
-                  src={`http://localhost:3001/tmp/uploads/${file}`}
+                  src={`data:${contentType};base64,${file}`}
                   alt="Profile image"
                 />
-                <p className="mb-1 mt-3 font-weight-semibold">{nome}</p>
+                <p className="mb-1 mt-3 font-weight-semibold"></p>
                 <p className="font-weight-light text-muted mb-0">
-                  {email}
+                
                 </p>
               </div>
               <a className="dropdown-item">

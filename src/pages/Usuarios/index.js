@@ -41,7 +41,7 @@ export default function Usuarios() {
   console.log(form)
   useEffect(() => {
     async function conectMateria() {
-      const response = await api.get("/materias");
+      const response = await api.get("/subject");
       if (response.status === 200) {
         setMateria(response.data);
       }
@@ -54,6 +54,7 @@ export default function Usuarios() {
       const response = await api.get("/series", {
         headers: { auth: getToken() },
       });
+      console.log(response)
       setSerie(response.data);
     }
     conectSerie();
@@ -265,7 +266,7 @@ export default function Usuarios() {
                   >
                     <option></option>
                     {serie.map((item) => (
-                      <option value={item.id}>{item.nome}</option>
+                      <option value={item.id}>{item.name}</option>
                     ))}
                   </select>
                 </div>
@@ -316,7 +317,7 @@ export default function Usuarios() {
                   >
                     <option></option>
                     {materia.map((item) => (
-                      <option value={item.id}>{item.nome}</option>
+                      <option value={item.id}>{item.name}</option>
                     ))}
                   </select>
                 </div>

@@ -8,6 +8,9 @@ import Series from "../Series";
 import Usuarios from "../Usuarios";
 import MenuSuperior from "../../components/MenuSuperior";
 import Sidebar from "../../components/SideBar";
+import Administrador from '../Usuarios/Administrador';
+import Professor from '../Usuarios/Professores';
+//------------------>
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
@@ -44,6 +47,14 @@ function Dashboard() {
                   <PrivateRoute
                     path="/dashboard/usuarios"
                     component={Usuarios}
+                  />
+                  <PrivateRoute
+                    path="/dashboard/admin"
+                    component={Administrador}
+                  />
+                   <PrivateRoute
+                    path="/dashboard/professor"
+                    component={Professor}
                   />
                 </Switch>
               </BrowserRouter>

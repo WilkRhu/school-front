@@ -1,4 +1,10 @@
 
 #img{
-    margin-left: 80%;
+    width: 252px;
+    height: 176px;
+    margin: 0 auto;
+}
+
+#central{
+    margin: 0 auto;
 }

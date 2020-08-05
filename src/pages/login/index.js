@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import {ProgressBar} from 'react-bootstrap';
 import { useForm } from "react-hook-form";
 import { withRouter } from "react-router-dom";
 import {  dataAno } from "../../service/formatData";
@@ -12,13 +11,13 @@ function Login(props) {
   const { handleSubmit, register, errors } = useForm();
   const [error, setError] = useState();
   const onSubmit = async (values) => {
-    const { email, senha } = values;
-    if (!email || !senha) {
-      setError("Preencha e-mail e senha para continuar!");
+    const { email, password } = values;
+    if (!email || !password) {
+      setError("Preencha e-mail e password para continuar!");
       alert(error);
     } else {
       try {
-        await api.post("/logOn", { email, senha }).then((response) => {
+        await api.post("/singin", { email, password }).then((response) => {
           setTimer(true);
           setTimeout(() => {
             login(response.data.token);
@@ -66,18 +65,18 @@ function Login(props) {
                     </div>
                   </div>
                   <div className="form-group">
-                    <label className="label">Senha</label>
+                    <label className="label">password</label>
                     <div className="input-group">
                       <input
                         type="password"
                         className="form-control"
                         placeholder="*********"
-                        name="senha"
+                        name="password"
                         ref={register({
                           validate: (value) => value !== "admin" || "Nice try!",
                         })}
                       />
-                      {errors.senha && errors.senha.message}
+                      {errors.password && errors.password.message}
                       <div className="input-group-append">
                         <span className="input-group-text">
                           <i className="mdi mdi-check-circle-outline"></i>

@@ -8,11 +8,12 @@ import {Danger, Success} from '../../components/Alert/alerts';
 export default function Materias() {
   const [materia, setMateria] = useState([]);
   const [cadMateria, setCadMateria] = useState(false);
+  const[errorCadMateria, setErroCadMateria] = useState(false);
   const { handleSubmit, register, errors } = useForm();
   const [loading, setLoaging] = useState(false);
   useEffect(() => {
     async function conectMateria() {
-      const response = await api.get("/materias");
+      const response = await api.get("/subject");
       setLoaging(true);
       setTimeout(() => {
         setLoaging(false);
@@ -23,7 +24,7 @@ export default function Materias() {
   }, []);
 
   const onSubmit = async (values) => {
-    const response = await api.post("/materias", values);
+    const response = await api.post("/subject", values);
     if (response.status === 201) {
       setCadMateria(true);
       setLoaging(true);
@@ -33,6 +34,10 @@ export default function Materias() {
        
       }, 4000);
     }
+    setErroCadMateria(true)
+    setTimeout(() => {
+      setErroCadMateria(false)
+    }, 4000);
   };
 
   return (
@@ -40,6 +45,10 @@ export default function Materias() {
       {cadMateria === true ?
           Success("Matéria cadastrada com sucesso!")
         : ''}
+        {
+          errorCadMateria === true ?
+          Danger("Erro ao cadastrar a matéria!")
+          : ''}
       <div class="col-12 stretch-card">
         <div class="card">
           <div class="card-body">
@@ -56,7 +65,7 @@ export default function Materias() {
                     class="form-control"
                     id="exampleInputEmail2"
                     placeholder="Ex: Matemática"
-                    name="nome"
+                    name="name"
                     ref={register()}
                     required
                   />
@@ -75,6 +84,7 @@ export default function Materias() {
         <div className="card">
           <div className="card-body">
             <h4 className="card-title">Matérias Cadastradas</h4>
+          {!loading ? (
             <table className="table">
               <thead>
                 <tr>
@@ -85,26 +95,29 @@ export default function Materias() {
                   <th>Excluir</th>
                 </tr>
               </thead>
-              <tbody className="tbody">
-                {!loading ? (
-                  materia.map((item) => (
-                    <tr>
-                      <td key={item.id}>{item.nome}</td>
-                      <td>{dataAtualFormatada(item.created_at)}</td>
-                      <td>{dataAtualFormatada(item.updated_at)}</td>
-                      <td>
-                        <i className="fa fa-edit"></i>
-                      </td>
-                      <td>
-                        <i className="fa fa-trash-o"></i>
-                      </td>
-                    </tr>
-                  ))
+                  <tbody className="tbody">
+                      {materia.map((item) => (
+                        <tr>
+                          <td key={item.id}>{item.name}</td>
+                          <td>{dataAtualFormatada(item.created_at)}</td>
+                          <td>{dataAtualFormatada(item.updated_at)}</td>
+                          <td>
+                            <i className="fa fa-edit"></i>
+                          </td>
+                          <td>
+                            <i className="fa fa-trash-o"></i>
+                          </td>
+                        </tr>
+                      )) }
+                  </tbody>
+                  </table>
                 ) : (
-                  <img src="../../assets/images/loader.gif" className="col-12" id="img" />
+                  <div className="col-12" >
+                    <div className="col-3" id="central">
+                      <img src="../../assets/images/loader2.gif" id="img"/>
+                    </div>
+                  </div>
                 )}
-              </tbody>
-            </table>
           </div>
         </div>
       </div>
