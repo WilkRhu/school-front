@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import api from "../../service/api";
 import { getToken } from "../../service/auth";
 import { useForm } from "react-hook-form";
+import Select from "react-select";
 
 export default function Usuarios() {
   const [materia, setMateria] = useState([]);
@@ -10,27 +11,29 @@ export default function Usuarios() {
   const [file, setFile] = useState('');
   const [filename, setFilename] = useState('Choose File');
   const [image, setImage] = useState({ preview: "", raw: "" });
-
+  const [optionSeries, setOptionSeries] = useState([]);
+  
+  
   const onSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();   
     formData.append('file', file);
-    formData.append('nome', form.nome);
+    formData.append('name', form.name);
     formData.append('login', form.login);
     formData.append('email', form.email);
-    formData.append('senha', form.senha);
-    formData.append('estado', form.estado);
-    formData.append('cidade', form.cidade);
-    formData.append('rua', form.rua);
-    formData.append('numero', form.numero);
-    formData.append('bairro', form.bairro);
+    formData.append('password', form.password);
+    formData.append('state', form.state);
+    formData.append('city', form.city);
+    formData.append('street', form.street);
+    formData.append('number', form.number);
+    formData.append('neighborhood', form.neighborhood);
     formData.append('telefone', form.telefone);
-    formData.append('referencia', form.referencia);
-    formData.append('tipo', form.tipo);
-    formData.append('materia_id', form.materia_id);
-    formData.append('serie_id', form.serie_id);
-    formData.append('responsavel_aluno_um', form.responsavel_aluno_um);
-    formData.append('responsavel_aluno_dois', form.responsavel_aluno_dois)
+    formData.append('reference', form.reference);
+    formData.append('type', form.type);
+    formData.append('subjects', form.subjects);
+    formData.append('series', optionSeries);
+    formData.append('student_responsible_one', form.student_responsible_one);
+    formData.append('student_responsible_two', form.student_responsible_two)
 
 
     const response = await api.post("/users", formData, {
@@ -38,7 +41,10 @@ export default function Usuarios() {
     });
     console.log(response);
   };
-  console.log(form)
+  console.log(form);
+  
+  
+  
   useEffect(() => {
     async function conectMateria() {
       const response = await api.get("/subject");
@@ -54,11 +60,18 @@ export default function Usuarios() {
       const response = await api.get("/series", {
         headers: { auth: getToken() },
       });
-      console.log(response)
       setSerie(response.data);
+      setOptionSeries(response.data);
     }
     conectSerie();
   }, []);
+ 
+  const opt = optionSeries.map(item => (
+    {
+      "value": item.name,
+      "label": item.name
+    }
+  ))
 
   const handleChange = (e) => {
     setForm({
@@ -66,6 +79,10 @@ export default function Usuarios() {
     });
     
   };
+
+  const handleChangeSelect = (e) => {
+    setOptionSeries(e);
+  }
 
   const handleChangeFile = (e) => {
     setFile(e.target.files[0]);
@@ -118,7 +135,7 @@ export default function Usuarios() {
                   className="form-control"
                   id="exampleInputName1"
                   placeholder="Name"
-                  name="nome"
+                  name="name"
                   onChange={e => handleChange(e)}
                   required
                 />
@@ -154,7 +171,7 @@ export default function Usuarios() {
                   className="form-control"
                   id="exampleInputPassword4"
                   placeholder="Password"
-                  name="senha"
+                  name="password"
                   onChange={e => handleChange(e)}
                   required
                 />
@@ -168,7 +185,7 @@ export default function Usuarios() {
                   className="form-control"
                   id="exampleInputCity1"
                   placeholder="Estado"
-                  name="estado"
+                  name="state"
                   onChange={e => handleChange(e)}
                 />
               </div>
@@ -179,7 +196,7 @@ export default function Usuarios() {
                   className="form-control"
                   id="exampleInputCity1"
                   placeholder="Cidade"
-                  name="cidade"
+                  name="city"
                   onChange={e => handleChange(e)}
                 />
               </div>
@@ -190,7 +207,7 @@ export default function Usuarios() {
                   className="form-control"
                   id="exampleInputCity1"
                   placeholder="Rua"
-                  name="rua"
+                  name="street"
                   onChange={e => handleChange(e)}
                 />
               </div>
@@ -201,7 +218,7 @@ export default function Usuarios() {
                   className="form-control"
                   id="exampleInputCity1"
                   placeholder="Ex: 00 "
-                  name="numero"
+                  name="number"
                   onChange={e => handleChange(e)}
                 />
               </div>
@@ -212,7 +229,7 @@ export default function Usuarios() {
                   className="form-control"
                   id="exampleInputCity1"
                   placeholder="Bairro"
-                  name="bairro"
+                  name="neighborhood"
                   onChange={e => handleChange(e)}
                 />
               </div>
@@ -234,7 +251,7 @@ export default function Usuarios() {
                   className="form-control"
                   id="exampleInputCity1"
                   placeholder="Referência"
-                  name="referencia"
+                  name="reference"
                   onChange={e => handleChange(e)}
                 />
               </div>
@@ -243,7 +260,7 @@ export default function Usuarios() {
                 <select
                   class="form-control form-control-lg"
                   id="tipo"
-                  name="tipo"
+                  name="type"
                   onChange={e => handleChange(e)}
                   required
                 >
@@ -288,7 +305,7 @@ export default function Usuarios() {
                     className="form-control"
                     id="exampleInputCity1"
                     placeholder="Nome da Mãe"
-                    name="responsavel_aluno_um"
+                    name="student_responsible_one"
                     onChange={e => handleChange(e)}
                   />
                 </div>
@@ -299,28 +316,43 @@ export default function Usuarios() {
                     className="form-control"
                     id="exampleInputCity1"
                     placeholder="Nome do pai"
-                    name="responsavel_aluno_dois"
+                    name="student_responsible_two"
                     onChange={e => handleChange(e)}
                   />
                 </div>
               </div>
-              <div className="col-12 professorForm" id="positionForm">
+              <div className="col-12 professorForm bg-light" id="positionForm">
                 <div class="form-group">
-                  <label for="exampleFormControlSelect1">
-                    Matéria do Professor
-                  </label>
-                  <select
-                    class="form-control form-control-lg"
-                    id="tipo"
-                    name="materia_id"
-                    onChange={e => handleChange(e)}
-                  >
-                    <option></option>
-                    {materia.map((item) => (
-                      <option value={item.id}>{item.name}</option>
-                    ))}
-                  </select>
+                  <div for="exampleFormControlSelect1">
+                    Matéria(as) do Professor
+                  </div>
+                        <div className="form-check form-check-flat danger">
+                            <select class="selectpicker" multiple name="subjects" onChange={e => handleChange(e)}>
+                            {materia
+                                ? materia.map((item) => (
+                              <option value={item.name}>{item.name}</option>
+                              ))
+                              : "Cadastre a Matéria antes de cadastrar a série"}
+                            </select>
+                        </div>
                 </div>
+                <div for="exampleFormControlSelect1">
+                    Serie(s) do Professor
+                </div>
+                  <div className="form-check form-check-flat danger">
+                      <Select 
+                        options={
+                          opt
+                        }
+                        value={
+                          opt.value
+                        }
+                        onChange={e => handleChangeSelect(e)}
+                        isMulti
+                        name={"series"}
+                      />
+                
+                  </div>      
               </div>
             </div>
             <div className="col-12" id="positionForm">

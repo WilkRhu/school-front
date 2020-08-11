@@ -32,9 +32,13 @@ function Login(props) {
       }
     }
   };
-  console.log(timer)
+
   return (
-    <div className="container-scroller">
+    <>
+        <video width="100%" height="100%" autoPlay muted loop="loop"  id="myVideo">
+         <source src="http://localhost:3000/assets/video/educacao.mp4" type="video/mp4" />
+        </video>
+    <div className="container-scroller" >
       <div className="container-fluid page-body-wrapper full-page-wrapper">
         <div className="content-wrapper d-flex align-items-center auth auth-bg-1 theme-one">
           <div className="row w-100">
@@ -144,6 +148,7 @@ function Login(props) {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

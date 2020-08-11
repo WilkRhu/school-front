@@ -16,6 +16,10 @@ export default function Series() {
     async function conectMateria() {
       const response = await api.get("/subject");
       if (response.status === 200) {
+        setLoaging(true)
+        setTimeout(() => {
+          setLoaging(false)
+        }, 4000);
         setMateria(response.data);
       }
     }
@@ -115,7 +119,8 @@ export default function Series() {
       <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Matérias Cadastradas</h4>
+            <h4 class="card-title">Séries Cadastradas</h4>
+            {loading === false ?
             <table class="table">
               <thead>
                 <tr>
@@ -136,6 +141,13 @@ export default function Series() {
                 ))}
               </tbody>
             </table>
+                : 
+                <div className="col-12" >
+                  <div className="col-3" id="central">
+                    <img src="../../assets/images/loader2.gif" id="img"/>
+                  </div>
+                </div>
+            }
           </div>
         </div>
       </div>
